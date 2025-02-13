@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, ParseIntPipe, Query } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -52,5 +52,15 @@ export class PostsController {
   @ApiResponse({ status: 404, description: 'Post not found.' })
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.postsService.remove(id);
+  }
+
+  @Get('search')
+  @ApiOperation({ summary: 'Search blog posts by title' })
+  @ApiResponse({ status: 200, description: 'Returns matching blog posts' })
+  @ApiResponse({ status: 400, description: 'Invalid search query' })
+  search(@Query('query') query: string) {
+    return this.postsService.findAll().filter(post => 
+      post.title.toLowerCase().includes(query.toLowerCase())
+    );
   }
 }

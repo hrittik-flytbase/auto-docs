@@ -2,51 +2,166 @@
   {
     "method": "POST",
     "route": "posts",
-    "summary": "Create a new blog post"
+    "summary": "Create a new blog post",
+    "requestBody": {
+      "type": "CreatePostDto"
+    },
+    "response": {
+      "status": 201,
+      "description": "The post has been successfully created."
+    },
+    "errorResponses": [
+      {
+        "status": 400,
+        "description": "Bad Request."
+      }
+    ]
   },
   {
     "method": "GET",
     "route": "posts",
-    "summary": "Get all blog posts"
+    "summary": "Get all blog posts",
+    "response": {
+      "status": 200,
+      "description": "Return all blog posts."
+    }
   },
   {
     "method": "GET",
     "route": "posts/:id",
-    "summary": "Get a blog post by id"
+    "summary": "Get a blog post by id",
+    "response": {
+      "status": 200,
+      "description": "Return the blog post."
+    },
+    "errorResponses": [
+      {
+        "status": 404,
+        "description": "Post not found."
+      }
+    ]
   },
   {
     "method": "PUT",
     "route": "posts/:id",
-    "summary": "Update a blog post"
+    "summary": "Update a blog post",
+    "requestBody": {
+      "type": "UpdatePostDto"
+    },
+    "response": {
+      "status": 200,
+      "description": "The post has been successfully updated."
+    },
+    "errorResponses": [
+      {
+        "status": 404,
+        "description": "Post not found."
+      }
+    ]
   },
   {
     "method": "DELETE",
     "route": "posts/:id",
-    "summary": "Delete a blog post"
+    "summary": "Delete a blog post",
+    "response": {
+      "status": 200,
+      "description": "The post has been successfully deleted."
+    },
+    "errorResponses": [
+      {
+        "status": 404,
+        "description": "Post not found."
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "route": "posts/search",
+    "summary": "Search blog posts by title",
+    "response": {
+      "status": 200,
+      "description": "Returns matching blog posts"
+    },
+    "errorResponses": [
+      {
+        "status": 400,
+        "description": "Invalid search query"
+      }
+    ]
   },
   {
     "method": "POST",
     "route": "users",
-    "summary": "Create a new user"
+    "summary": "Create a new user",
+    "requestBody": {
+      "type": "CreateUserDto"
+    },
+    "response": {
+      "status": 201,
+      "description": "The user has been successfully created."
+    },
+    "errorResponses": [
+      {
+        "status": 400,
+        "description": "Bad Request."
+      }
+    ]
   },
   {
     "method": "GET",
     "route": "users",
-    "summary": "Get all users"
+    "summary": "Get all users",
+    "response": {
+      "status": 200,
+      "description": "Return all users."
+    }
   },
   {
     "method": "GET",
     "route": "users/:id",
-    "summary": "Get a user by id"
+    "summary": "Get a user by id",
+    "response": {
+      "status": 200,
+      "description": "Return the user."
+    },
+    "errorResponses": [
+      {
+        "status": 404,
+        "description": "User not found."
+      }
+    ]
   },
   {
     "method": "PUT",
     "route": "users/:id",
-    "summary": "Update a user"
+    "summary": "Update a user",
+    "requestBody": {
+      "type": "UpdateUserDto"
+    },
+    "response": {
+      "status": 200,
+      "description": "The user has been successfully updated."
+    },
+    "errorResponses": [
+      {
+        "status": 404,
+        "description": "User not found."
+      }
+    ]
   },
   {
     "method": "DELETE",
     "route": "users/:id",
-    "summary": "Delete a user"
+    "summary": "Delete a user",
+    "response": {
+      "status": 200,
+      "description": "The user has been successfully deleted."
+    },
+    "errorResponses": [
+      {
+        "status": 404,
+        "description": "User not found."
+      }
+    ]
   }
 ]
