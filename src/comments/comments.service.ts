@@ -21,7 +21,7 @@ export class CommentsService {
   private comments: Comment[] = [];
   private commentId = 1;
 
-  create(createCommentDto: CreateCommentDto) {
+  async create(createCommentDto: CreateCommentDto): Promise<Comment> {
     const comment = {
       id: this.commentId++,
       ...createCommentDto,
@@ -31,11 +31,11 @@ export class CommentsService {
     return comment;
   }
 
-  findAll() {
+  async findAll(): Promise<Comment[]> {
     return this.comments;
   }
 
-  findOne(id: number) {
+  async findOne(id: number): Promise<Comment> {
     const comment = this.comments.find(comment => comment.id === id);
     if (!comment) {
       throw new NotFoundException(`Comment with ID ${id} not found`);
@@ -43,15 +43,15 @@ export class CommentsService {
     return comment;
   }
 
-  findByPostId(postId: number) {
+  async findByPostId(postId: number): Promise<Comment[]> {
     return this.comments.filter(comment => comment.postId === postId);
   }
 
-  findByUserId(userId: number) {
+  async findByUserId(userId: number): Promise<Comment[]> {
     return this.comments.filter(comment => comment.userId === userId);
   }
 
-  findTopCommenters(limit: number = 5) {
+  async findTopCommenters(limit: number = 5): Promise<TopCommenter[]> {
     const commentCounts = this.comments.reduce<Record<string, number>>((acc, comment) => {
       acc[comment.userId] = (acc[comment.userId] || 0) + 1;
       return acc;
@@ -63,7 +63,7 @@ export class CommentsService {
       .slice(0, limit);
   }
 
-  update(id: number, updateCommentDto: UpdateCommentDto) {
+  async update(id: number, updateCommentDto: UpdateCommentDto): Promise<Comment> {
     const commentIndex = this.comments.findIndex(comment => comment.id === id);
     if (commentIndex === -1) {
       throw new NotFoundException(`Comment with ID ${id} not found`);
@@ -78,7 +78,7 @@ export class CommentsService {
     return this.comments[commentIndex];
   }
 
-  remove(id: number) {
+  async remove(id: number): Promise<Comment> {
     const commentIndex = this.comments.findIndex(comment => comment.id === id);
     if (commentIndex === -1) {
       throw new NotFoundException(`Comment with ID ${id} not found`);

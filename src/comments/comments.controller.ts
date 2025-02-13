@@ -8,7 +8,8 @@ import {
   Delete, 
   ParseIntPipe,
   Query,
-  DefaultValuePipe
+  DefaultValuePipe,
+  HttpStatus
 } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
@@ -18,8 +19,26 @@ import {
   ApiOperation, 
   ApiResponse, 
   ApiParam, 
-  ApiQuery 
+  ApiQuery,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiNotFoundResponse,
+  ApiBadRequestResponse
 } from '@nestjs/swagger';
+
+interface Comment {
+  id: number;
+  content: string;
+  postId: number;
+  userId: number;
+  createdAt: Date;
+  updatedAt?: Date;
+}
+
+interface TopCommenter {
+  userId: number;
+  count: number;
+}
 
 @ApiTags('comments')
 @Controller('comments')
@@ -28,29 +47,22 @@ export class CommentsController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new comment' })
-  @ApiResponse({ 
-    status: 201, 
+  @ApiCreatedResponse({ 
     description: 'The comment has been successfully created.',
-    schema: {
-      type: 'object',
-      properties: {
-        id: { type: 'number' },
-        content: { type: 'string' },
-        postId: { type: 'number' },
-        userId: { type: 'number' },
-        createdAt: { type: 'string', format: 'date-time' }
-      }
-    }
+    type: CreateCommentDto
   })
-  @ApiResponse({ status: 400, description: 'Invalid request data.' })
-  create(@Body() createCommentDto: CreateCommentDto) {
+  @ApiBadRequestResponse({ description: 'Invalid request data.' })
+  create(@Body() createCommentDto: CreateCommentDto): Promise<Comment> {
     return this.commentsService.create(createCommentDto);
   }
 
   @Get()
   @ApiOperation({ summary: 'Get all comments' })
-  @ApiResponse({ status: 200, description: 'Return all comments.' })
-  findAll() {
+  @ApiOkResponse({ 
+    description: 'Return all comments.',
+    type: [CreateCommentDto]
+  })
+  findAll(): Promise<Comment[]> {
     return this.commentsService.findAll();
   }
 
@@ -62,8 +74,7 @@ export class CommentsController {
     type: Number,
     description: 'Number of top commenters to return'
   })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiOkResponse({ 
     description: 'Returns list of top commenters',
     schema: {
       type: 'array',
@@ -78,53 +89,68 @@ export class CommentsController {
   })
   getTopCommenters(
     @Query('limit', new DefaultValuePipe(5), ParseIntPipe) limit: number
-  ) {
+  ): Promise<TopCommenter[]> {
     return this.commentsService.findTopCommenters(limit);
   }
 
   @Get('by-post/:postId')
   @ApiOperation({ summary: 'Get all comments for a specific post' })
   @ApiParam({ name: 'postId', description: 'ID of the post' })
-  @ApiResponse({ status: 200, description: 'Returns all comments for the post.' })
-  findByPost(@Param('postId', ParseIntPipe) postId: number) {
+  @ApiOkResponse({ 
+    description: 'Returns all comments for the post.',
+    type: [CreateCommentDto]
+  })
+  findByPost(@Param('postId', ParseIntPipe) postId: number): Promise<Comment[]> {
     return this.commentsService.findByPostId(postId);
   }
 
   @Get('by-user/:userId')
   @ApiOperation({ summary: 'Get all comments by a specific user' })
   @ApiParam({ name: 'userId', description: 'ID of the user' })
-  @ApiResponse({ status: 200, description: 'Returns all comments by the user.' })
-  findByUser(@Param('userId', ParseIntPipe) userId: number) {
+  @ApiOkResponse({ 
+    description: 'Returns all comments by the user.',
+    type: [CreateCommentDto]
+  })
+  findByUser(@Param('userId', ParseIntPipe) userId: number): Promise<Comment[]> {
     return this.commentsService.findByUserId(userId);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a comment by id' })
   @ApiParam({ name: 'id', description: 'Comment ID' })
-  @ApiResponse({ status: 200, description: 'Return the comment.' })
-  @ApiResponse({ status: 404, description: 'Comment not found.' })
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  @ApiOkResponse({ 
+    description: 'Return the comment.',
+    type: CreateCommentDto
+  })
+  @ApiNotFoundResponse({ description: 'Comment not found.' })
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<Comment> {
     return this.commentsService.findOne(id);
   }
 
   @Put(':id')
   @ApiOperation({ summary: 'Update a comment' })
   @ApiParam({ name: 'id', description: 'Comment ID' })
-  @ApiResponse({ status: 200, description: 'The comment has been successfully updated.' })
-  @ApiResponse({ status: 404, description: 'Comment not found.' })
+  @ApiOkResponse({ 
+    description: 'The comment has been successfully updated.',
+    type: CreateCommentDto
+  })
+  @ApiNotFoundResponse({ description: 'Comment not found.' })
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateCommentDto: UpdateCommentDto,
-  ) {
+  ): Promise<Comment> {
     return this.commentsService.update(id, updateCommentDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a comment' })
   @ApiParam({ name: 'id', description: 'Comment ID' })
-  @ApiResponse({ status: 200, description: 'The comment has been successfully deleted.' })
-  @ApiResponse({ status: 404, description: 'Comment not found.' })
-  remove(@Param('id', ParseIntPipe) id: number) {
+  @ApiOkResponse({ 
+    description: 'The comment has been successfully deleted.',
+    type: CreateCommentDto
+  })
+  @ApiNotFoundResponse({ description: 'Comment not found.' })
+  remove(@Param('id', ParseIntPipe) id: number): Promise<Comment> {
     return this.commentsService.remove(id);
   }
 }

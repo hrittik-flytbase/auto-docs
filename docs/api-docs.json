@@ -5,68 +5,32 @@
     "summary": "Create a new comment",
     "requestBody": {
       "type": "CreateCommentDto"
-    },
-    "response": {
-      "status": 201,
-      "description": "The comment has been successfully created."
-    },
-    "errorResponses": [
-      {
-        "status": 400,
-        "description": "Invalid request data."
-      }
-    ]
+    }
   },
   {
     "method": "GET",
     "route": "comments",
-    "summary": "Get all comments",
-    "response": {
-      "status": 200,
-      "description": "Return all comments."
-    }
+    "summary": "Get all comments"
   },
   {
     "method": "GET",
     "route": "comments/top-commenters",
-    "summary": "Get top users by comment count",
-    "response": {
-      "status": 200,
-      "description": "Returns list of top commenters"
-    }
+    "summary": "Get top users by comment count"
   },
   {
     "method": "GET",
     "route": "comments/by-post/:postId",
-    "summary": "Get all comments for a specific post",
-    "response": {
-      "status": 200,
-      "description": "Returns all comments for the post."
-    }
+    "summary": "Get all comments for a specific post"
   },
   {
     "method": "GET",
     "route": "comments/by-user/:userId",
-    "summary": "Get all comments by a specific user",
-    "response": {
-      "status": 200,
-      "description": "Returns all comments by the user."
-    }
+    "summary": "Get all comments by a specific user"
   },
   {
     "method": "GET",
     "route": "comments/:id",
-    "summary": "Get a comment by id",
-    "response": {
-      "status": 200,
-      "description": "Return the comment."
-    },
-    "errorResponses": [
-      {
-        "status": 404,
-        "description": "Comment not found."
-      }
-    ]
+    "summary": "Get a comment by id"
   },
   {
     "method": "PUT",
@@ -74,32 +38,12 @@
     "summary": "Update a comment",
     "requestBody": {
       "type": "UpdateCommentDto"
-    },
-    "response": {
-      "status": 200,
-      "description": "The comment has been successfully updated."
-    },
-    "errorResponses": [
-      {
-        "status": 404,
-        "description": "Comment not found."
-      }
-    ]
+    }
   },
   {
     "method": "DELETE",
     "route": "comments/:id",
-    "summary": "Delete a comment",
-    "response": {
-      "status": 200,
-      "description": "The comment has been successfully deleted."
-    },
-    "errorResponses": [
-      {
-        "status": 404,
-        "description": "Comment not found."
-      }
-    ]
+    "summary": "Delete a comment"
   },
   {
     "method": "POST",
