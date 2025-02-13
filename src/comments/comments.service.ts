@@ -2,9 +2,23 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 
+interface Comment {
+  id: number;
+  content: string;
+  postId: number;
+  userId: number;
+  createdAt: Date;
+  updatedAt?: Date;
+}
+
+interface TopCommenter {
+  userId: number;
+  count: number;
+}
+
 @Injectable()
 export class CommentsService {
-  private comments = [];
+  private comments: Comment[] = [];
   private commentId = 1;
 
   create(createCommentDto: CreateCommentDto) {
@@ -38,7 +52,7 @@ export class CommentsService {
   }
 
   findTopCommenters(limit: number = 5) {
-    const commentCounts = this.comments.reduce((acc, comment) => {
+    const commentCounts = this.comments.reduce<Record<string, number>>((acc, comment) => {
       acc[comment.userId] = (acc[comment.userId] || 0) + 1;
       return acc;
     }, {});
