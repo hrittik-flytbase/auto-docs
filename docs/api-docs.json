@@ -1,6 +1,52 @@
 [
   {
     "method": "POST",
+    "route": "categories",
+    "summary": "Create a new category",
+    "requestBody": {
+      "type": "CreateCategoryDto"
+    }
+  },
+  {
+    "method": "GET",
+    "route": "categories",
+    "summary": "Get all categories with optional filtering and sorting"
+  },
+  {
+    "method": "GET",
+    "route": "categories/hierarchy",
+    "summary": "Get category hierarchy tree"
+  },
+  {
+    "method": "GET",
+    "route": "categories/by-tag/:tag",
+    "summary": "Get categories by tag"
+  },
+  {
+    "method": "GET",
+    "route": "categories/:id",
+    "summary": "Get a category by id"
+  },
+  {
+    "method": "GET",
+    "route": "categories/:id/children",
+    "summary": "Get direct child categories"
+  },
+  {
+    "method": "PUT",
+    "route": "categories/:id",
+    "summary": "Update a category",
+    "requestBody": {
+      "type": "UpdateCategoryDto"
+    }
+  },
+  {
+    "method": "DELETE",
+    "route": "categories/:id",
+    "summary": "Delete a category"
+  },
+  {
+    "method": "POST",
     "route": "comments",
     "summary": "Create a new comment",
     "requestBody": {
