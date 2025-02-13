@@ -1,0 +1,52 @@
+[
+  {
+    "method": "POST",
+    "route": "posts",
+    "summary": "Create a new blog post"
+  },
+  {
+    "method": "GET",
+    "route": "posts",
+    "summary": "Get all blog posts"
+  },
+  {
+    "method": "GET",
+    "route": "posts/:id",
+    "summary": "Get a blog post by id"
+  },
+  {
+    "method": "PUT",
+    "route": "posts/:id",
+    "summary": "Update a blog post"
+  },
+  {
+    "method": "DELETE",
+    "route": "posts/:id",
+    "summary": "Delete a blog post"
+  },
+  {
+    "method": "POST",
+    "route": "users",
+    "summary": "Create a new user"
+  },
+  {
+    "method": "GET",
+    "route": "users",
+    "summary": "Get all users"
+  },
+  {
+    "method": "GET",
+    "route": "users/:id",
+    "summary": "Get a user by id"
+  },
+  {
+    "method": "PUT",
+    "route": "users/:id",
+    "summary": "Update a user"
+  },
+  {
+    "method": "DELETE",
+    "route": "users/:id",
+    "summary": "Delete a user"
+  }
+]

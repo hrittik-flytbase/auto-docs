@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Generate API documentation and stage the changes
+npm run generate-api-docs && git add docs/api-docs.json
