@@ -5,7 +5,34 @@
     "summary": "Create a new category",
     "description": "",
     "requestBody": {
-      "type": "CreateCategoryDto"
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the category",
+          "example": "Technology"
+        },
+        "description": {
+          "type": "string",
+          "description": "The description of the category",
+          "example": "All tech-related posts"
+        },
+        "parentId": {
+          "type": "string",
+          "description": "The ID of the parent category",
+          "example": 1
+        },
+        "tags": {
+          "type": "string",
+          "description": "Tags associated with the category",
+          "example": "['tech"
+        },
+        "order": {
+          "type": "string",
+          "description": "The display order of the category",
+          "example": 1
+        }
+      }
     },
     "response": {
       "status": 201,
@@ -15,7 +42,7 @@
         "properties": {
           "id": {
             "type": "number",
-            "example": "1"
+            "example": 1
           }
         }
       }
@@ -29,7 +56,7 @@
           "properties": {
             "statusCode": {
               "type": "number",
-              "example": "400"
+              "example": 400
             }
           }
         }
@@ -49,7 +76,7 @@
         "properties": {
           "id": {
             "type": "number",
-            "example": "1"
+            "example": 1
           }
         }
       }
@@ -69,7 +96,7 @@
         "properties": {
           "id": {
             "type": "number",
-            "example": "1"
+            "example": 1
           }
         }
       }
@@ -89,7 +116,7 @@
         "properties": {
           "id": {
             "type": "number",
-            "example": "1"
+            "example": 1
           }
         }
       }
@@ -145,7 +172,8 @@
     "summary": "Update a category",
     "description": "",
     "requestBody": {
-      "type": "UpdateCategoryDto"
+      "type": "object",
+      "properties": {}
     },
     "response": {
       "status": 200,
@@ -178,7 +206,7 @@
         "properties": {
           "id": {
             "type": "number",
-            "example": "1"
+            "example": 1
           }
         }
       }
@@ -192,7 +220,7 @@
           "properties": {
             "statusCode": {
               "type": "number",
-              "example": "404"
+              "example": 404
             }
           }
         }
@@ -205,7 +233,7 @@
           "properties": {
             "statusCode": {
               "type": "number",
-              "example": "400"
+              "example": 400
             }
           }
         }
@@ -218,7 +246,24 @@
     "summary": "Create a new comment",
     "description": "",
     "requestBody": {
-      "type": "CreateCommentDto"
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "The content of the comment",
+          "example": "Great post!"
+        },
+        "postId": {
+          "type": "string",
+          "description": "The ID of the post this comment belongs to",
+          "example": 1
+        },
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user who created the comment",
+          "example": 1
+        }
+      }
     },
     "response": {
       "status": 201,
@@ -335,7 +380,8 @@
     "summary": "Update a comment",
     "description": "",
     "requestBody": {
-      "type": "UpdateCommentDto"
+      "type": "object",
+      "properties": {}
     },
     "response": {
       "status": 200,
@@ -376,7 +422,19 @@
     "summary": "Create a new blog post",
     "description": "",
     "requestBody": {
-      "type": "CreatePostDto"
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "The title of the post",
+          "example": "My First Post"
+        },
+        "content": {
+          "type": "string",
+          "description": "The content of the post",
+          "example": "This is the content of my post"
+        }
+      }
     },
     "response": {
       "status": 200,
@@ -412,7 +470,8 @@
     "summary": "Update a blog post",
     "description": "",
     "requestBody": {
-      "type": "UpdatePostDto"
+      "type": "object",
+      "properties": {}
     },
     "response": {
       "status": 200,
@@ -448,7 +507,19 @@
     "summary": "Create a new user",
     "description": "",
     "requestBody": {
-      "type": "CreateUserDto"
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the user",
+          "example": "John Doe"
+        },
+        "email": {
+          "type": "string",
+          "description": "The email of the user",
+          "example": "john@example.com"
+        }
+      }
     },
     "response": {
       "status": 200,
@@ -484,7 +555,8 @@
     "summary": "Update a user",
     "description": "",
     "requestBody": {
-      "type": "UpdateUserDto"
+      "type": "object",
+      "properties": {}
     },
     "response": {
       "status": 200,

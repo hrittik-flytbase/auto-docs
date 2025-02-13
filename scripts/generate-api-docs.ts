@@ -62,12 +62,47 @@ function extractPropertyFromText(text: string): SchemaProperty {
   const formatMatch = text.match(/format:\s*['"]([\w]+)['"]/);
   const nullableMatch = text.match(/nullable:\s*(true|false)/);
   const itemsMatch = text.match(/items:\s*({[^}]+})/s);
+  const enumMatch = text.match(/enum:\s*(\[[^\]]+\])/);
   
-  if (typeMatch) property.type = typeMatch[1];
+  if (typeMatch) {
+    property.type = typeMatch[1];
+    // Update type based on example value if needed
+    if (exampleMatch) {
+      const example = exampleMatch[1].trim();
+      if (example.startsWith('[')) {
+        property.type = 'array';
+        try {
+          const items = JSON.parse(example);
+          if (items.length > 0) {
+            property.items = {
+              type: typeof items[0],
+              example: items[0]
+            };
+          }
+        } catch {}
+      } else if (!isNaN(Number(example))) {
+        property.type = 'number';
+      }
+    }
+  }
+  
   if (descMatch) property.description = descMatch[1];
-  if (exampleMatch) property.example = exampleMatch[1].trim();
+  if (exampleMatch) {
+    const example = exampleMatch[1].trim();
+    try {
+      property.example = JSON.parse(example);
+    } catch {
+      // Remove quotes if it's a string
+      property.example = example.replace(/^['"]/g, '').replace(/['"]$/g, '');
+    }
+  }
   if (formatMatch) property.format = formatMatch[1];
   if (nullableMatch) property.nullable = nullableMatch[1] === 'true';
+  if (enumMatch) {
+    try {
+      property.enum = JSON.parse(enumMatch[1]);
+    } catch {}
+  }
   
   if (itemsMatch) {
     property.items = extractPropertyFromText(itemsMatch[1]);
@@ -110,8 +145,8 @@ function extractSwaggerInfo(method: any) {
     const args = apiOperation.getArguments()[0];
     if (args) {
       const text = args.getText();
-      const summaryMatch = text.match(/summary:\s*['"](.*?)['"]/);
-      const descriptionMatch = text.match(/description:\s*['"](.*?)['"]/);
+      const summaryMatch = text.match(/summary:\s*['"](.*?)['"]/)
+      const descriptionMatch = text.match(/description:\s*['"](.*?)['"]/)
       if (summaryMatch) info.summary = summaryMatch[1];
       if (descriptionMatch) info.description = descriptionMatch[1];
     }
@@ -123,10 +158,39 @@ function extractSwaggerInfo(method: any) {
     const bodyDecorator = param.getDecorator('Body');
     if (bodyDecorator) {
       const paramType = param.getType();
-      const typeText = paramType.getText();
-      // Extract just the type name without the import path
-      const typeMatch = typeText.match(/[a-zA-Z_][a-zA-Z0-9_]*$/);
-      info.requestBody = { type: typeMatch ? typeMatch[0] : typeText };
+      const symbol = paramType.getSymbol();
+      if (symbol) {
+        const declaration = symbol.getDeclarations()[0];
+        if (declaration) {
+          const properties = declaration.getProperties();
+          const schema: RequestBodySchema = {
+            type: 'object',
+            properties: {}
+          };
+
+          properties.forEach(prop => {
+            const apiPropDecorator = prop.getDecorators().find(d => 
+              d.getName() === 'ApiProperty' || d.getName() === 'ApiPropertyOptional'
+            );
+
+            if (apiPropDecorator) {
+              const args = apiPropDecorator.getArguments()[0];
+              if (args) {
+                const text = args.getText();
+                schema.properties[prop.getName()] = extractPropertyFromText(text);
+              }
+            } else {
+              // If no decorator, use the property type
+              const propType = prop.getType();
+              schema.properties[prop.getName()] = {
+                type: propType.getText()
+              };
+            }
+          });
+
+          info.requestBody = schema;
+        }
+      }
     }
   });
 
@@ -139,7 +203,7 @@ function extractSwaggerInfo(method: any) {
     const args = decorator.getArguments()[0];
     if (args) {
       const text = args.getText();
-      const descriptionMatch = text.match(/description:\s*['"](.*?)['"]/);
+      const descriptionMatch = text.match(/description:\s*['"](.*?)['"]/)
       const schemaMatch = text.match(/schema:\s*({[^}]+})/s);
       const typeMatch = text.match(/type:\s*([^,}\n]+)/);
 
