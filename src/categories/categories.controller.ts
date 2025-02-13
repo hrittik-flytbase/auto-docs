@@ -23,6 +23,7 @@ import {
   ApiBadRequestResponse,
   ApiQuery,
   getSchemaPath,
+  ApiParam,
 } from '@nestjs/swagger';
 
 interface Category {
@@ -49,10 +50,29 @@ export class CategoriesController {
   @ApiOperation({ summary: 'Create a new category' })
   @ApiCreatedResponse({
     description: 'The category has been successfully created.',
-    type: CreateCategoryDto,
+    schema: {
+      type: 'object',
+      properties: {
+        id: { type: 'number', example: 1 },
+        name: { type: 'string', example: 'Technology' },
+        description: { type: 'string', example: 'All tech-related posts' },
+        parentId: { type: 'number', example: null, nullable: true },
+        tags: { type: 'array', items: { type: 'string' }, example: ['tech', 'programming'] },
+        order: { type: 'number', example: 1 },
+        createdAt: { type: 'string', format: 'date-time', example: '2025-02-13T08:22:15.000Z' }
+      }
+    }
   })
   @ApiBadRequestResponse({ 
-    description: 'Invalid request data or parent category not found.' 
+    description: 'Invalid request data or parent category not found.',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 400 },
+        message: { type: 'string', example: 'Parent category with ID 123 not found' },
+        error: { type: 'string', example: 'Bad Request' }
+      }
+    }
   })
   async create(@Body() createCategoryDto: CreateCategoryDto): Promise<Category> {
     return this.categoriesService.create(createCategoryDto);
@@ -62,29 +82,49 @@ export class CategoriesController {
   @ApiOperation({ summary: 'Get all categories with optional filtering and sorting' })
   @ApiQuery({ 
     name: 'search', 
-    required: false, 
-    description: 'Search categories by name or description' 
+    required: false,
+    type: String,
+    description: 'Search categories by name or description',
+    example: 'tech'
   })
   @ApiQuery({ 
     name: 'includeChildren', 
     required: false, 
     type: Boolean,
-    description: 'Include child categories in the response' 
+    description: 'Include child categories in the response',
+    example: true
   })
   @ApiQuery({ 
     name: 'sort', 
     required: false, 
     enum: ['asc', 'desc'],
-    description: 'Sort categories by name' 
+    description: 'Sort categories by name',
+    example: 'asc'
   })
   @ApiQuery({ 
     name: 'tag', 
-    required: false, 
-    description: 'Filter categories by tag' 
+    required: false,
+    type: String,
+    description: 'Filter categories by tag',
+    example: 'programming'
   })
   @ApiOkResponse({
     description: 'Returns the list of categories.',
-    type: [CreateCategoryDto],
+    schema: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          id: { type: 'number', example: 1 },
+          name: { type: 'string', example: 'Technology' },
+          description: { type: 'string', example: 'All tech-related posts' },
+          parentId: { type: 'number', example: null, nullable: true },
+          tags: { type: 'array', items: { type: 'string' }, example: ['tech', 'programming'] },
+          order: { type: 'number', example: 1 },
+          createdAt: { type: 'string', format: 'date-time', example: '2025-02-13T08:22:15.000Z' }
+        }
+      }
+    }
   })
   async findAll(@Query() query: QueryCategoryDto): Promise<Category[]> {
     return this.categoriesService.findAll(query);
@@ -99,14 +139,24 @@ export class CategoriesController {
       items: {
         type: 'object',
         properties: {
-          id: { type: 'number' },
-          name: { type: 'string' },
-          description: { type: 'string' },
-          tags: { type: 'array', items: { type: 'string' } },
-          order: { type: 'number' },
+          id: { type: 'number', example: 1 },
+          name: { type: 'string', example: 'Technology' },
+          description: { type: 'string', example: 'All tech-related posts' },
+          tags: { type: 'array', items: { type: 'string' }, example: ['tech', 'programming'] },
+          order: { type: 'number', example: 1 },
           children: {
             type: 'array',
-            items: { $ref: getSchemaPath(CreateCategoryDto) }
+            items: {
+              type: 'object',
+              properties: {
+                id: { type: 'number', example: 2 },
+                name: { type: 'string', example: 'Programming' },
+                description: { type: 'string', example: 'Programming related posts' },
+                tags: { type: 'array', items: { type: 'string' }, example: ['programming', 'coding'] },
+                order: { type: 'number', example: 1 },
+                children: { type: 'array', items: { $ref: '#/components/schemas/Category' } }
+              }
+            }
           }
         }
       }
@@ -118,9 +168,28 @@ export class CategoriesController {
 
   @Get('by-tag/:tag')
   @ApiOperation({ summary: 'Get categories by tag' })
+  @ApiParam({
+    name: 'tag',
+    description: 'Tag to filter categories by',
+    example: 'programming',
+    required: true
+  })
   @ApiOkResponse({
     description: 'Returns categories with the specified tag.',
-    type: [CreateCategoryDto],
+    schema: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          id: { type: 'number', example: 1 },
+          name: { type: 'string', example: 'Programming' },
+          description: { type: 'string', example: 'Programming related posts' },
+          tags: { type: 'array', items: { type: 'string' }, example: ['programming', 'coding'] },
+          order: { type: 'number', example: 1 },
+          createdAt: { type: 'string', format: 'date-time', example: '2025-02-13T08:22:15.000Z' }
+        }
+      }
+    }
   })
   async findByTag(@Param('tag') tag: string): Promise<Category[]> {
     return this.categoriesService.findByTag(tag);
@@ -167,12 +236,49 @@ export class CategoriesController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a category' })
+  @ApiParam({
+    name: 'id',
+    description: 'ID of the category to delete',
+    type: 'number',
+    example: 1,
+    required: true
+  })
   @ApiOkResponse({
     description: 'The category has been successfully deleted.',
-    type: CreateCategoryDto,
+    schema: {
+      type: 'object',
+      properties: {
+        id: { type: 'number', example: 1 },
+        name: { type: 'string', example: 'Programming' },
+        description: { type: 'string', example: 'Programming related posts' },
+        tags: { type: 'array', items: { type: 'string' }, example: ['programming', 'coding'] },
+        order: { type: 'number', example: 1 },
+        createdAt: { type: 'string', format: 'date-time', example: '2025-02-13T08:22:15.000Z' }
+      }
+    }
   })
-  @ApiNotFoundResponse({ description: 'Category not found.' })
-  @ApiBadRequestResponse({ description: 'Cannot delete category with children.' })
+  @ApiNotFoundResponse({ 
+    description: 'Category not found.',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 404 },
+        message: { type: 'string', example: 'Category with ID 1 not found' },
+        error: { type: 'string', example: 'Not Found' }
+      }
+    }
+  })
+  @ApiBadRequestResponse({ 
+    description: 'Cannot delete category with children.',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 400 },
+        message: { type: 'string', example: 'Cannot delete category with child categories' },
+        error: { type: 'string', example: 'Bad Request' }
+      }
+    }
+  })
   async remove(@Param('id', ParseIntPipe) id: number): Promise<Category> {
     return this.categoriesService.remove(id);
   }
