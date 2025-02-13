@@ -3,257 +3,504 @@
     "method": "POST",
     "route": "categories",
     "summary": "Create a new category",
+    "description": "",
     "requestBody": {
       "type": "CreateCategoryDto"
-    }
+    },
+    "response": {
+      "status": 201,
+      "description": "The category has been successfully created.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": "1"
+          }
+        }
+      }
+    },
+    "errorResponses": [
+      {
+        "status": 400,
+        "description": "Invalid request data or parent category not found.",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "statusCode": {
+              "type": "number",
+              "example": "400"
+            }
+          }
+        }
+      }
+    ]
   },
   {
     "method": "GET",
     "route": "categories",
-    "summary": "Get all categories with optional filtering and sorting"
+    "summary": "Get all categories with optional filtering and sorting",
+    "description": "",
+    "response": {
+      "status": 200,
+      "description": "Returns the list of categories.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": "1"
+          }
+        }
+      }
+    },
+    "errorResponses": []
   },
   {
     "method": "GET",
     "route": "categories/hierarchy",
-    "summary": "Get category hierarchy tree"
+    "summary": "Get category hierarchy tree",
+    "description": "",
+    "response": {
+      "status": 200,
+      "description": "Returns the category hierarchy.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": "1"
+          }
+        }
+      }
+    },
+    "errorResponses": []
   },
   {
     "method": "GET",
     "route": "categories/by-tag/:tag",
-    "summary": "Get categories by tag"
+    "summary": "Get categories by tag",
+    "description": "",
+    "response": {
+      "status": 200,
+      "description": "Returns categories with the specified tag.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": "1"
+          }
+        }
+      }
+    },
+    "errorResponses": []
   },
   {
     "method": "GET",
     "route": "categories/:id",
-    "summary": "Get a category by id"
+    "summary": "Get a category by id",
+    "description": "",
+    "response": {
+      "status": 200,
+      "description": "Returns the category.",
+      "schema": {
+        "type": "CreateCategoryDto"
+      }
+    },
+    "errorResponses": [
+      {
+        "status": 404,
+        "description": "Category not found."
+      }
+    ]
   },
   {
     "method": "GET",
     "route": "categories/:id/children",
-    "summary": "Get direct child categories"
+    "summary": "Get direct child categories",
+    "description": "",
+    "response": {
+      "status": 200,
+      "description": "Returns the child categories.",
+      "schema": {
+        "type": "array",
+        "properties": {
+          "items": {
+            "type": "CreateCategoryDto"
+          }
+        }
+      }
+    },
+    "errorResponses": [
+      {
+        "status": 404,
+        "description": "Parent category not found."
+      }
+    ]
   },
   {
     "method": "PUT",
     "route": "categories/:id",
     "summary": "Update a category",
+    "description": "",
     "requestBody": {
       "type": "UpdateCategoryDto"
-    }
+    },
+    "response": {
+      "status": 200,
+      "description": "The category has been successfully updated.",
+      "schema": {
+        "type": "CreateCategoryDto"
+      }
+    },
+    "errorResponses": [
+      {
+        "status": 404,
+        "description": "Category not found."
+      },
+      {
+        "status": 400,
+        "description": "Invalid request data, parent category not found, or circular reference detected."
+      }
+    ]
   },
   {
     "method": "DELETE",
     "route": "categories/:id",
-    "summary": "Delete a category"
+    "summary": "Delete a category",
+    "description": "",
+    "response": {
+      "status": 200,
+      "description": "The category has been successfully deleted.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": "1"
+          }
+        }
+      }
+    },
+    "errorResponses": [
+      {
+        "status": 404,
+        "description": "Category not found.",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "statusCode": {
+              "type": "number",
+              "example": "404"
+            }
+          }
+        }
+      },
+      {
+        "status": 400,
+        "description": "Cannot delete category with children.",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "statusCode": {
+              "type": "number",
+              "example": "400"
+            }
+          }
+        }
+      }
+    ]
   },
   {
     "method": "POST",
     "route": "comments",
     "summary": "Create a new comment",
+    "description": "",
     "requestBody": {
       "type": "CreateCommentDto"
-    }
+    },
+    "response": {
+      "status": 201,
+      "description": "The comment has been successfully created.",
+      "schema": {
+        "type": "CreateCommentDto"
+      }
+    },
+    "errorResponses": [
+      {
+        "status": 400,
+        "description": "Invalid request data."
+      }
+    ]
   },
   {
     "method": "GET",
     "route": "comments",
-    "summary": "Get all comments"
+    "summary": "Get all comments",
+    "description": "",
+    "response": {
+      "status": 200,
+      "description": "Return all comments.",
+      "schema": {
+        "type": "array",
+        "properties": {
+          "items": {
+            "type": "CreateCommentDto"
+          }
+        }
+      }
+    },
+    "errorResponses": []
   },
   {
     "method": "GET",
     "route": "comments/top-commenters",
-    "summary": "Get top users by comment count"
+    "summary": "Get top users by comment count",
+    "description": "",
+    "response": {
+      "status": 200,
+      "description": "Returns list of top commenters",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "errorResponses": []
   },
   {
     "method": "GET",
     "route": "comments/by-post/:postId",
-    "summary": "Get all comments for a specific post"
+    "summary": "Get all comments for a specific post",
+    "description": "",
+    "response": {
+      "status": 200,
+      "description": "Returns all comments for the post.",
+      "schema": {
+        "type": "array",
+        "properties": {
+          "items": {
+            "type": "CreateCommentDto"
+          }
+        }
+      }
+    },
+    "errorResponses": []
   },
   {
     "method": "GET",
     "route": "comments/by-user/:userId",
-    "summary": "Get all comments by a specific user"
+    "summary": "Get all comments by a specific user",
+    "description": "",
+    "response": {
+      "status": 200,
+      "description": "Returns all comments by the user.",
+      "schema": {
+        "type": "array",
+        "properties": {
+          "items": {
+            "type": "CreateCommentDto"
+          }
+        }
+      }
+    },
+    "errorResponses": []
   },
   {
     "method": "GET",
     "route": "comments/:id",
-    "summary": "Get a comment by id"
+    "summary": "Get a comment by id",
+    "description": "",
+    "response": {
+      "status": 200,
+      "description": "Return the comment.",
+      "schema": {
+        "type": "CreateCommentDto"
+      }
+    },
+    "errorResponses": [
+      {
+        "status": 404,
+        "description": "Comment not found."
+      }
+    ]
   },
   {
     "method": "PUT",
     "route": "comments/:id",
     "summary": "Update a comment",
+    "description": "",
     "requestBody": {
       "type": "UpdateCommentDto"
-    }
+    },
+    "response": {
+      "status": 200,
+      "description": "The comment has been successfully updated.",
+      "schema": {
+        "type": "CreateCommentDto"
+      }
+    },
+    "errorResponses": [
+      {
+        "status": 404,
+        "description": "Comment not found."
+      }
+    ]
   },
   {
     "method": "DELETE",
     "route": "comments/:id",
-    "summary": "Delete a comment"
+    "summary": "Delete a comment",
+    "description": "",
+    "response": {
+      "status": 200,
+      "description": "The comment has been successfully deleted.",
+      "schema": {
+        "type": "CreateCommentDto"
+      }
+    },
+    "errorResponses": [
+      {
+        "status": 404,
+        "description": "Comment not found."
+      }
+    ]
   },
   {
     "method": "POST",
     "route": "posts",
     "summary": "Create a new blog post",
+    "description": "",
     "requestBody": {
       "type": "CreatePostDto"
     },
     "response": {
-      "status": 201,
-      "description": "The post has been successfully created."
+      "status": 200,
+      "description": "Bad Request."
     },
-    "errorResponses": [
-      {
-        "status": 400,
-        "description": "Bad Request."
-      }
-    ]
+    "errorResponses": []
   },
   {
     "method": "GET",
     "route": "posts",
     "summary": "Get all blog posts",
+    "description": "",
     "response": {
       "status": 200,
       "description": "Return all blog posts."
-    }
+    },
+    "errorResponses": []
   },
   {
     "method": "GET",
     "route": "posts/:id",
     "summary": "Get a blog post by id",
+    "description": "",
     "response": {
       "status": 200,
-      "description": "Return the blog post."
+      "description": "Post not found."
     },
-    "errorResponses": [
-      {
-        "status": 404,
-        "description": "Post not found."
-      }
-    ]
+    "errorResponses": []
   },
   {
     "method": "PUT",
     "route": "posts/:id",
     "summary": "Update a blog post",
+    "description": "",
     "requestBody": {
       "type": "UpdatePostDto"
     },
     "response": {
       "status": 200,
-      "description": "The post has been successfully updated."
+      "description": "Post not found."
     },
-    "errorResponses": [
-      {
-        "status": 404,
-        "description": "Post not found."
-      }
-    ]
+    "errorResponses": []
   },
   {
     "method": "DELETE",
     "route": "posts/:id",
     "summary": "Delete a blog post",
+    "description": "",
     "response": {
       "status": 200,
-      "description": "The post has been successfully deleted."
+      "description": "Post not found."
     },
-    "errorResponses": [
-      {
-        "status": 404,
-        "description": "Post not found."
-      }
-    ]
+    "errorResponses": []
   },
   {
     "method": "GET",
     "route": "posts/search",
     "summary": "Search blog posts by title",
+    "description": "",
     "response": {
       "status": 200,
-      "description": "Returns matching blog posts"
+      "description": "Invalid search query"
     },
-    "errorResponses": [
-      {
-        "status": 400,
-        "description": "Invalid search query"
-      }
-    ]
+    "errorResponses": []
   },
   {
     "method": "POST",
     "route": "users",
     "summary": "Create a new user",
+    "description": "",
     "requestBody": {
       "type": "CreateUserDto"
     },
     "response": {
-      "status": 201,
-      "description": "The user has been successfully created."
+      "status": 200,
+      "description": "Bad Request."
     },
-    "errorResponses": [
-      {
-        "status": 400,
-        "description": "Bad Request."
-      }
-    ]
+    "errorResponses": []
   },
   {
     "method": "GET",
     "route": "users",
     "summary": "Get all users",
+    "description": "",
     "response": {
       "status": 200,
       "description": "Return all users."
-    }
+    },
+    "errorResponses": []
   },
   {
     "method": "GET",
     "route": "users/:id",
     "summary": "Get a user by id",
+    "description": "",
     "response": {
       "status": 200,
-      "description": "Return the user."
+      "description": "User not found."
     },
-    "errorResponses": [
-      {
-        "status": 404,
-        "description": "User not found."
-      }
-    ]
+    "errorResponses": []
   },
   {
     "method": "PUT",
     "route": "users/:id",
     "summary": "Update a user",
+    "description": "",
     "requestBody": {
       "type": "UpdateUserDto"
     },
     "response": {
       "status": 200,
-      "description": "The user has been successfully updated."
+      "description": "User not found."
     },
-    "errorResponses": [
-      {
-        "status": 404,
-        "description": "User not found."
-      }
-    ]
+    "errorResponses": []
   },
   {
     "method": "DELETE",
     "route": "users/:id",
     "summary": "Delete a user",
+    "description": "",
     "response": {
       "status": 200,
-      "description": "The user has been successfully deleted."
+      "description": "User not found."
     },
-    "errorResponses": [
-      {
-        "status": 404,
-        "description": "User not found."
-      }
-    ]
+    "errorResponses": []
   }
 ]
